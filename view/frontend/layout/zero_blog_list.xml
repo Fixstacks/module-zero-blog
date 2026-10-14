@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+
+    A list of posts: the index, a category, a tag, an author.
+-->
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="zero_blog_page"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Template" name="zero.blog.list" template="Zero_Blog::list.phtml">
+                <arguments>
+                    <argument name="view" xsi:type="object">Zero\Blog\ViewModel\Blog</argument>
+                </arguments>
+                <block class="Magento\Framework\View\Element\Template" name="zero.blog.list.card" as="card" template="Zero_Blog::post/card.phtml">
+                    <arguments>
+                        <argument name="view" xsi:type="object">Zero\Blog\ViewModel\Blog</argument>
+                    </arguments>
+                </block>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Zero_Blog::blog" title="Blog" translate="title" module="Zero_Blog" sortOrder="15"
+             parent="Magento_Backend::content" resource="Zero_Blog::blog"/>
+        <add id="Zero_Blog::posts" title="Posts" translate="title" module="Zero_Blog" sortOrder="10"
+             parent="Zero_Blog::blog" action="zero_blog/post/index" resource="Zero_Blog::posts"/>
+        <add id="Zero_Blog::categories" title="Categories" translate="title" module="Zero_Blog" sortOrder="20"
+             parent="Zero_Blog::blog" action="zero_blog/category/index" resource="Zero_Blog::categories"/>
+        <add id="Zero_Blog::tags" title="Tags" translate="title" module="Zero_Blog" sortOrder="30"
+             parent="Zero_Blog::blog" action="zero_blog/tag/index" resource="Zero_Blog::tags"/>
+        <add id="Zero_Blog::authors" title="Authors" translate="title" module="Zero_Blog" sortOrder="40"
+             parent="Zero_Blog::blog" action="zero_blog/author/index" resource="Zero_Blog::authors"/>
+        <add id="Zero_Blog::comments" title="Comments" translate="title" module="Zero_Blog" sortOrder="50"
+             parent="Zero_Blog::blog" action="zero_blog/comment/index" resource="Zero_Blog::comments"/>
+        <add id="Zero_Blog::settings" title="Settings" translate="title" module="Zero_Blog" sortOrder="60"
+             parent="Zero_Blog::blog" action="adminhtml/system_config/edit/section/zero_blog" resource="Zero_Blog::config"/>
+    </menu>
+</config>

@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">zero_blog_tag_form.zero_blog_tag_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Tag</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="back" class="Zero\Blog\Block\Adminhtml\Edit\TagBackButton"/>
+            <button name="delete" class="Zero\Blog\Block\Adminhtml\Edit\TagDeleteButton"/>
+            <button name="save" class="Zero\Blog\Block\Adminhtml\Edit\TagSaveButton"/>
+            <button name="continue" class="Zero\Blog\Block\Adminhtml\Edit\TagContinueButton"/>
+        </buttons>
+        <namespace>zero_blog_tag_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>zero_blog_tag_form.zero_blog_tag_form_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="zero_blog_tag_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="zero_blog/tag/save"/>
+        </settings>
+        <dataProvider class="Zero\Blog\Ui\DataProvider\TagForm" name="zero_blog_tag_form_data_source">
+            <settings>
+                <requestFieldName>tag_id</requestFieldName>
+                <primaryFieldName>tag_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <fieldset name="general" sortOrder="10">
+        <settings>
+            <label/>
+        </settings>
+        <field name="tag_id" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <visible>false</visible>
+                <dataScope>tag_id</dataScope>
+            </settings>
+        </field>
+        <field name="title" sortOrder="20" formElement="input">
+            <settings>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>text</dataType>
+                <label translate="true">Title</label>
+                <dataScope>title</dataScope>
+            </settings>
+        </field>
+        <field name="url_key" sortOrder="30" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">URL Key</label>
+                <notice translate="true">Empty: made from the title. Lowercase letters, digits and dashes.</notice>
+                <dataScope>url_key</dataScope>
+            </settings>
+        </field>
+        <field name="description" sortOrder="40" formElement="textarea">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Description</label>
+                <notice translate="true">Shown above the tag's posts.</notice>
+                <dataScope>description</dataScope>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>4</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+    </fieldset>
+    <fieldset name="seo" sortOrder="20">
+        <settings>
+            <label translate="true">Search Engine Optimization</label>
+            <collapsible>true</collapsible>
+            <opened>false</opened>
+        </settings>
+        <field name="meta_title" sortOrder="10" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Meta Title</label>
+                <notice translate="true">Empty: the title.</notice>
+                <dataScope>meta_title</dataScope>
+            </settings>
+        </field>
+        <field name="meta_description" sortOrder="20" formElement="textarea">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Meta Description</label>
+                <notice translate="true">About 150 characters. Empty: the excerpt or description.</notice>
+                <dataScope>meta_description</dataScope>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>3</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+    </fieldset>
+</form>

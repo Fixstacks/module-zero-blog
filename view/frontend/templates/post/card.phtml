@@ -1,0 +1,63 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * A post in a list: image, category, title, excerpt, author, date, reading
+ * time. `post` and optionally `featured` (the first post on the index: a
+ * wide card) are set by the parent template; `heading` is the title level.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+/** @var \Zero\Blog\ViewModel\Blog $view */
+$view = $block->getData('view');
+/** @var \Zero\Blog\Model\Post $post */
+$post = $block->getData('post');
+$featured = (bool) $block->getData('featured');
+$tag = $block->getData('heading') ?: 'h2';
+$url = $view->postUrl($post);
+$author = $view->author($post);
+$category = $view->categories($post)[0] ?? null;
+$picture = $view->picture(
+    (string) $post->getData('image'),
+    (string) $post->getData('image_alt'),
+    $featured ? '(min-width: 1024px) 60vw, 100vw' : '(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw',
+    $featured && (bool) $block->getData('eager'),
+    'w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none'
+);
+?>
+<article class="group relative flex flex-col gap-4 <?= $featured ? 'lg:grid lg:grid-cols-5 lg:gap-10 lg:items-center' : '' ?>">
+    <?php if ($picture !== ''): ?>
+        <div class="aspect-video overflow-hidden bg-base-200 <?= $featured ? 'lg:col-span-3' : '' ?>">
+            <?= /* @noEscape */ $picture ?>
+        </div>
+    <?php endif; ?>
+    <div class="flex flex-col gap-3 <?= $featured ? 'lg:col-span-2' : '' ?>">
+        <?php if ($category): ?>
+            <a href="<?= $escaper->escapeUrl($category['url']) ?>"
+               class="relative z-10 self-start text-xs font-semibold uppercase tracking-widest text-secondary hover:underline">
+                <?= $escaper->escapeHtml($category['title']) ?>
+            </a>
+        <?php endif; ?>
+        <<?= /* @noEscape */ $tag ?> class="<?= $featured ? 'text-3xl sm:text-4xl' : 'text-xl' ?> font-medium tracking-tight text-balance">
+            <a href="<?= $escaper->escapeUrl($url) ?>" class="after:absolute after:inset-0 hover:underline decoration-1 underline-offset-4">
+                <?= $escaper->escapeHtml($post->getData('title')) ?>
+            </a>
+        </<?= /* @noEscape */ $tag ?>>
+        <?php if ((string) $post->getData('excerpt') !== ''): ?>
+            <p class="text-base-content/80 <?= $featured ? 'text-lg' : 'line-clamp-3' ?>"><?= $escaper->escapeHtml($post->getData('excerpt')) ?></p>
+        <?php endif; ?>
+        <p class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-base-content/70">
+            <?php if ($author): ?>
+                <span><?= $escaper->escapeHtml($author->getData('name')) ?></span>
+                <span aria-hidden="true">·</span>
+            <?php endif; ?>
+            <time datetime="<?= $escaper->escapeHtmlAttr($view->isoDate((string) $post->getData('published_at'))) ?>">
+                <?= $escaper->escapeHtml($view->date((string) $post->getData('published_at'))) ?>
+            </time>
+            <span aria-hidden="true">·</span>
+            <span><?= $escaper->escapeHtml(__('%1 min read', $view->readingTime($post))) ?></span>
+        </p>
+    </div>
+</article>

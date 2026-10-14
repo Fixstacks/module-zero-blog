@@ -1,0 +1,162 @@
+{
+    "zero_blog_author": {
+        "column": {
+            "author_id": true,
+            "name": true,
+            "url_key": true,
+            "job_title": true,
+            "bio": true,
+            "image": true,
+            "website": true,
+            "linkedin": true,
+            "twitter": true,
+            "meta_title": true,
+            "meta_description": true,
+            "is_active": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "ZERO_BLOG_AUTHOR_URL_KEY": true
+        }
+    },
+    "zero_blog_post": {
+        "column": {
+            "post_id": true,
+            "title": true,
+            "url_key": true,
+            "excerpt": true,
+            "image": true,
+            "image_alt": true,
+            "author_id": true,
+            "is_active": true,
+            "published_at": true,
+            "allow_comments": true,
+            "meta_title": true,
+            "meta_description": true,
+            "meta_robots": true,
+            "canonical_url": true,
+            "reading_time": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "ZERO_BLOG_POST_URL_KEY": true,
+            "ZERO_BLOG_POST_IS_ACTIVE_PUBLISHED_AT": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "ZERO_BLOG_POST_AUTHOR_ID_ZERO_BLOG_AUTHOR_AUTHOR_ID": true
+        }
+    },
+    "zero_blog_post_store": {
+        "column": {
+            "post_id": true,
+            "store_id": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "ZERO_BLOG_POST_STORE_POST_ID_ZERO_BLOG_POST_POST_ID": true,
+            "ZERO_BLOG_POST_STORE_STORE_ID_STORE_STORE_ID": true
+        }
+    },
+    "zero_blog_category": {
+        "column": {
+            "category_id": true,
+            "title": true,
+            "url_key": true,
+            "description": true,
+            "meta_title": true,
+            "meta_description": true,
+            "position": true,
+            "is_active": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "ZERO_BLOG_CATEGORY_URL_KEY": true
+        }
+    },
+    "zero_blog_post_category": {
+        "column": {
+            "post_id": true,
+            "category_id": true
+        },
+        "index": {
+            "ZERO_BLOG_POST_CATEGORY_CATEGORY_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "ZERO_BLOG_POST_CATEGORY_POST_ID_ZERO_BLOG_POST_POST_ID": true,
+            "ZERO_BLOG_POST_CTGR_CTGR_ID_ZERO_BLOG_CTGR_CTGR_ID": true
+        }
+    },
+    "zero_blog_tag": {
+        "column": {
+            "tag_id": true,
+            "title": true,
+            "url_key": true,
+            "description": true,
+            "meta_title": true,
+            "meta_description": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "ZERO_BLOG_TAG_URL_KEY": true
+        }
+    },
+    "zero_blog_post_tag": {
+        "column": {
+            "post_id": true,
+            "tag_id": true
+        },
+        "index": {
+            "ZERO_BLOG_POST_TAG_TAG_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "ZERO_BLOG_POST_TAG_POST_ID_ZERO_BLOG_POST_POST_ID": true,
+            "ZERO_BLOG_POST_TAG_TAG_ID_ZERO_BLOG_TAG_TAG_ID": true
+        }
+    },
+    "zero_blog_post_product": {
+        "column": {
+            "post_id": true,
+            "product_id": true,
+            "position": true
+        },
+        "index": {
+            "ZERO_BLOG_POST_PRODUCT_PRODUCT_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "ZERO_BLOG_POST_PRODUCT_POST_ID_ZERO_BLOG_POST_POST_ID": true,
+            "ZERO_BLOG_POST_PRD_PRD_ID_CAT_PRD_ENTT_ENTT_ID": true
+        }
+    },
+    "zero_blog_comment": {
+        "column": {
+            "comment_id": true,
+            "post_id": true,
+            "store_id": true,
+            "customer_id": true,
+            "author_name": true,
+            "author_email": true,
+            "content": true,
+            "status": true,
+            "created_at": true
+        },
+        "index": {
+            "ZERO_BLOG_COMMENT_POST_ID_STATUS": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "ZERO_BLOG_COMMENT_POST_ID_ZERO_BLOG_POST_POST_ID": true,
+            "ZERO_BLOG_COMMENT_STORE_ID_STORE_STORE_ID": true
+        }
+    }
+}

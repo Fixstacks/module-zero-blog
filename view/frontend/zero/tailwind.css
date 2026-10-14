@@ -1,0 +1,9 @@
+/* Built into the Zero theme's CSS while Zero_Blog is enabled. */
+@source "../templates/**/*.phtml";
+
+/* A post's body: the Zero CMS components closer together than on a page. */
+@layer components {
+    .zero-blog-body .zero-cms {
+        gap: 2.5rem;
+    }
+}

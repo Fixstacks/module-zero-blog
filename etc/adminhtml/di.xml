@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Featured images and author photos: media/zero_blog (no SVG: it can carry scripts). -->
+    <virtualType name="Zero\Blog\ImageUploader" type="Magento\Catalog\Model\ImageUploader">
+        <arguments>
+            <argument name="baseTmpPath" xsi:type="string">zero_blog/tmp</argument>
+            <argument name="basePath" xsi:type="string">zero_blog</argument>
+            <argument name="allowedExtensions" xsi:type="array">
+                <item name="jpg" xsi:type="string">jpg</item>
+                <item name="jpeg" xsi:type="string">jpeg</item>
+                <item name="png" xsi:type="string">png</item>
+                <item name="gif" xsi:type="string">gif</item>
+            </argument>
+            <argument name="allowedMimeTypes" xsi:type="array">
+                <item name="jpg" xsi:type="string">image/jpg</item>
+                <item name="jpeg" xsi:type="string">image/jpeg</item>
+                <item name="png" xsi:type="string">image/png</item>
+                <item name="gif" xsi:type="string">image/gif</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Zero\Blog\Model\Admin\Image">
+        <arguments>
+            <argument name="imageUploader" xsi:type="object">Zero\Blog\ImageUploader</argument>
+        </arguments>
+    </type>
+    <type name="Zero\Blog\Controller\Adminhtml\Image\Upload">
+        <arguments>
+            <argument name="imageUploader" xsi:type="object">Zero\Blog\ImageUploader</argument>
+        </arguments>
+    </type>
+    <!-- Form data (Ui\DataProvider\Form) per entity. -->
+    <virtualType name="Zero\Blog\Ui\DataProvider\PostForm" type="Zero\Blog\Ui\DataProvider\Form">
+        <arguments>
+            <argument name="entity" xsi:type="string">post</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Ui\DataProvider\CategoryForm" type="Zero\Blog\Ui\DataProvider\Form">
+        <arguments>
+            <argument name="entity" xsi:type="string">category</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Ui\DataProvider\TagForm" type="Zero\Blog\Ui\DataProvider\Form">
+        <arguments>
+            <argument name="entity" xsi:type="string">tag</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Ui\DataProvider\AuthorForm" type="Zero\Blog\Ui\DataProvider\Form">
+        <arguments>
+            <argument name="entity" xsi:type="string">author</argument>
+        </arguments>
+    </virtualType>
+    <!-- Form buttons (Block\Adminhtml\Edit\Button). -->
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\PostBackButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">back</argument>
+            <argument name="entity" xsi:type="string">post</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\PostDeleteButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">delete</argument>
+            <argument name="entity" xsi:type="string">post</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\PostSaveButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">save</argument>
+            <argument name="entity" xsi:type="string">post</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\PostContinueButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">continue</argument>
+            <argument name="entity" xsi:type="string">post</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\PostContentButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">content</argument>
+            <argument name="entity" xsi:type="string">post</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\CategoryBackButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">back</argument>
+            <argument name="entity" xsi:type="string">category</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\CategoryDeleteButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">delete</argument>
+            <argument name="entity" xsi:type="string">category</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\CategorySaveButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">save</argument>
+            <argument name="entity" xsi:type="string">category</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\CategoryContinueButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">continue</argument>
+            <argument name="entity" xsi:type="string">category</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\TagBackButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">back</argument>
+            <argument name="entity" xsi:type="string">tag</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\TagDeleteButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">delete</argument>
+            <argument name="entity" xsi:type="string">tag</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\TagSaveButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">save</argument>
+            <argument name="entity" xsi:type="string">tag</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\TagContinueButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">continue</argument>
+            <argument name="entity" xsi:type="string">tag</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\AuthorBackButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">back</argument>
+            <argument name="entity" xsi:type="string">author</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\AuthorDeleteButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">delete</argument>
+            <argument name="entity" xsi:type="string">author</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\AuthorSaveButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">save</argument>
+            <argument name="entity" xsi:type="string">author</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Block\Adminhtml\Edit\AuthorContinueButton" type="Zero\Blog\Block\Adminhtml\Edit\Button">
+        <arguments>
+            <argument name="kind" xsi:type="string">continue</argument>
+            <argument name="entity" xsi:type="string">author</argument>
+        </arguments>
+    </virtualType>
+</config>

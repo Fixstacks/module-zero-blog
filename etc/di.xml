@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- A post's body is edited in the Zero CMS editor. -->
+    <type name="Zero\Cms\Model\Content\Target\Pool">
+        <arguments>
+            <argument name="types" xsi:type="array">
+                <item name="zero_blog_post" xsi:type="object">Zero\Blog\Model\Cms\PostTarget\Proxy</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Zero\Cms\Model\Content\Repository">
+        <plugin name="zero_blog_reading_time" type="Zero\Blog\Plugin\UpdateReadingTime"/>
+    </type>
+    <!-- Posts, categories and authors in the XML sitemap. -->
+    <type name="Magento\Sitemap\Model\ItemProvider\Composite">
+        <arguments>
+            <argument name="itemProviders" xsi:type="array">
+                <item name="zeroBlogProvider" xsi:type="object">Zero\Blog\Model\Sitemap\ItemProvider</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Zero\Blog\Console\Command\Import">
+        <arguments>
+            <argument name="sources" xsi:type="array">
+                <item name="wordpress" xsi:type="object">Zero\Blog\Model\Import\Source\WordPress</item>
+                <item name="magefan" xsi:type="object">Zero\Blog\Model\Import\Source\Magefan</item>
+                <item name="amasty" xsi:type="object">Zero\Blog\Model\Import\Source\Amasty</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="zero_blog_import" xsi:type="object">Zero\Blog\Console\Command\Import\Proxy</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Admin grids. -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="zero_blog_post_listing_data_source" xsi:type="string">Zero\Blog\Model\ResourceModel\Post\Grid</item>
+                <item name="zero_blog_category_listing_data_source" xsi:type="string">Zero\Blog\Model\ResourceModel\Category\Grid</item>
+                <item name="zero_blog_tag_listing_data_source" xsi:type="string">Zero\Blog\Model\ResourceModel\Tag\Grid</item>
+                <item name="zero_blog_author_listing_data_source" xsi:type="string">Zero\Blog\Model\ResourceModel\Author\Grid</item>
+                <item name="zero_blog_comment_listing_data_source" xsi:type="string">Zero\Blog\Model\ResourceModel\Comment\Grid</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Zero\Blog\Model\ResourceModel\Category\Grid" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">zero_blog_category</argument>
+            <argument name="resourceModel" xsi:type="string">Zero\Blog\Model\ResourceModel\Category</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Model\ResourceModel\Tag\Grid" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">zero_blog_tag</argument>
+            <argument name="resourceModel" xsi:type="string">Zero\Blog\Model\ResourceModel\Tag</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Zero\Blog\Model\ResourceModel\Author\Grid" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">zero_blog_author</argument>
+            <argument name="resourceModel" xsi:type="string">Zero\Blog\Model\ResourceModel\Author</argument>
+        </arguments>
+    </virtualType>
+</config>

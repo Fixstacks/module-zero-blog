@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <customer>
+            <captcha>
+                <frontend>
+                    <areas>
+                        <zero_blog_comment>
+                            <label>Blog comment</label>
+                        </zero_blog_comment>
+                    </areas>
+                </frontend>
+            </captcha>
+        </customer>
+        <zero_blog>
+            <general>
+                <enabled>1</enabled>
+                <route>blog</route>
+                <title>Blog</title>
+                <posts_per_page>12</posts_per_page>
+            </general>
+            <comments>
+                <enabled>1</enabled>
+            </comments>
+            <rss>
+                <enabled>1</enabled>
+            </rss>
+            <products>
+                <show_on_product_page>1</show_on_product_page>
+            </products>
+            <sitemap>
+                <post_priority>0.7</post_priority>
+                <post_changefreq>weekly</post_changefreq>
+                <category_priority>0.5</category_priority>
+                <category_changefreq>weekly</category_changefreq>
+            </sitemap>
+        </zero_blog>
+    </default>
+</config>

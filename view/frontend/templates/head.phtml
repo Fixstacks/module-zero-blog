@@ -1,0 +1,26 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * Open Graph, Twitter card, RSS link and JSON-LD of a blog page (Block\Head).
+ * Attribute values use escapeHtml: escapeHtmlAttr would write "og:title" as
+ * "og&#x3A;title", which some link preview parsers don't decode.
+ *
+ * @var \Zero\Blog\Block\Head $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+?>
+<?php foreach ($block->openGraph() as $property => $content): ?>
+<meta property="<?= $escaper->escapeHtml($property) ?>" content="<?= $escaper->escapeHtml($content) ?>">
+<?php endforeach; ?>
+<?php foreach ($block->articleTags() as $tag): ?>
+<meta property="article:tag" content="<?= $escaper->escapeHtml($tag) ?>">
+<?php endforeach; ?>
+<?php foreach ($block->twitter() as $name => $content): ?>
+<meta name="<?= $escaper->escapeHtml($name) ?>" content="<?= $escaper->escapeHtml($content) ?>">
+<?php endforeach; ?>
+<?php if ($block->rssUrl() !== ''): ?>
+<link rel="alternate" type="application/rss+xml" title="<?= $escaper->escapeHtml($block->rssTitle()) ?>" href="<?= $escaper->escapeUrl($block->rssUrl()) ?>">
+<?php endif; ?>
+<script type="application/ld+json"><?= /* @noEscape */ $block->jsonLd() ?></script>

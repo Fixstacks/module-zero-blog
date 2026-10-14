@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+
+    Every blog page: its own heading (no stock page title), the head tags
+    (Open Graph, RSS, JSON-LD; Block\Head also carries the page cache tags).
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <!-- Block\Head writes the blog's own sharing tags (articles, authors). -->
+        <referenceBlock name="zero.social.tags" remove="true"/>
+        <referenceBlock name="head.additional">
+            <block class="Zero\Blog\Block\Head" name="zero.blog.head" template="Zero_Blog::head.phtml"/>
+        </referenceBlock>
+    </body>
+</page>

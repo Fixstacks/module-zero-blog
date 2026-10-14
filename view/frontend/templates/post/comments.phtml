@@ -1,0 +1,68 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * A post's approved comments and the form for a new one. The page is
+ * cached: the form's form_key comes from session.js like every other form;
+ * a new comment shows once approved in the admin (that refreshes the page).
+ * The "website" field is a trap for bots: people never see it.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+/** @var \Zero\Blog\ViewModel\Blog $view */
+$view = $block->getData('view');
+/** @var \Zero\Blog\Model\Post $post */
+$post = $view->entity();
+if (!$view->commentsEnabled($post)) {
+    return;
+}
+$comments = $view->comments($post);
+?>
+<section id="comments" class="flex flex-col gap-8 border-t border-base-300 pt-10 max-w-3xl scroll-mt-6" aria-labelledby="zero-blog-comments">
+    <h2 id="zero-blog-comments" class="text-3xl font-medium tracking-tight">
+        <?= $escaper->escapeHtml($comments ? __('Comments (%1)', count($comments)) : __('Comments')) ?>
+    </h2>
+    <?php if ($comments): ?>
+        <ol class="flex flex-col gap-6">
+            <?php foreach ($comments as $comment): ?>
+                <li id="comment-<?= (int) $comment->getId() ?>" class="flex flex-col gap-2 border-s-2 border-base-300 ps-4">
+                    <p class="text-sm">
+                        <span class="font-medium"><?= $escaper->escapeHtml($comment->getData('author_name')) ?></span>
+                        <span class="text-base-content/70"> · <time datetime="<?= $escaper->escapeHtmlAttr($view->isoDate((string) $comment->getData('created_at'))) ?>"><?= $escaper->escapeHtml($view->date((string) $comment->getData('created_at'))) ?></time></span>
+                    </p>
+                    <div class="flex flex-col gap-2 leading-relaxed"><?= /* @noEscape */ $view->paragraphs((string) $comment->getData('content')) ?></div>
+                </li>
+            <?php endforeach; ?>
+        </ol>
+    <?php else: ?>
+        <p class="text-base-content/70"><?= $escaper->escapeHtml(__('No comments yet. Be the first.')) ?></p>
+    <?php endif; ?>
+
+    <form method="post" action="<?= $escaper->escapeUrl($view->commentAction()) ?>" class="flex flex-col gap-4 bg-base-200 p-6">
+        <h3 class="text-xl font-medium"><?= $escaper->escapeHtml(__('Leave a comment')) ?></h3>
+        <p class="text-sm text-base-content/70"><?= $escaper->escapeHtml(__('Comments appear after moderation. Your email is never shown.')) ?></p>
+        <?= $block->getBlockHtml('formkey') ?>
+        <input type="hidden" name="post_id" value="<?= (int) $post->getId() ?>">
+        <div class="grid gap-4 sm:grid-cols-2">
+            <label class="flex flex-col gap-1">
+                <span class="text-sm font-medium"><?= $escaper->escapeHtml(__('Name')) ?></span>
+                <input type="text" name="name" required maxlength="100" autocomplete="name" class="input w-full">
+            </label>
+            <label class="flex flex-col gap-1">
+                <span class="text-sm font-medium"><?= $escaper->escapeHtml(__('Email')) ?></span>
+                <input type="email" name="email" required maxlength="255" autocomplete="email" class="input w-full">
+            </label>
+        </div>
+        <label class="flex flex-col gap-1">
+            <span class="text-sm font-medium"><?= $escaper->escapeHtml(__('Comment')) ?></span>
+            <textarea name="comment" required minlength="2" maxlength="3000" rows="5" class="textarea w-full"></textarea>
+        </label>
+        <div class="sr-only" aria-hidden="true">
+            <label><?= $escaper->escapeHtml(__('Leave this empty')) ?> <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+        </div>
+        <?= $block->getChildHtml('captcha') ?>
+        <button type="submit" class="btn btn-neutral self-start"><?= $escaper->escapeHtml(__('Post comment')) ?></button>
+    </form>
+</section>

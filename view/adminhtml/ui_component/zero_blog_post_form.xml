@@ -1,0 +1,310 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">zero_blog_post_form.zero_blog_post_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Post</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="back" class="Zero\Blog\Block\Adminhtml\Edit\PostBackButton"/>
+            <button name="delete" class="Zero\Blog\Block\Adminhtml\Edit\PostDeleteButton"/>
+            <button name="save" class="Zero\Blog\Block\Adminhtml\Edit\PostSaveButton"/>
+            <button name="continue" class="Zero\Blog\Block\Adminhtml\Edit\PostContinueButton"/>
+            <button name="content" class="Zero\Blog\Block\Adminhtml\Edit\PostContentButton"/>
+        </buttons>
+        <namespace>zero_blog_post_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>zero_blog_post_form.zero_blog_post_form_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="zero_blog_post_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="zero_blog/post/save"/>
+        </settings>
+        <dataProvider class="Zero\Blog\Ui\DataProvider\PostForm" name="zero_blog_post_form_data_source">
+            <settings>
+                <requestFieldName>post_id</requestFieldName>
+                <primaryFieldName>post_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <fieldset name="general" sortOrder="10">
+        <settings>
+            <label/>
+        </settings>
+        <field name="post_id" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <visible>false</visible>
+                <dataScope>post_id</dataScope>
+            </settings>
+        </field>
+        <field name="is_active" sortOrder="10" formElement="checkbox">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">0</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Published</label>
+                <notice translate="true">Shown on the storefront once the publish date is reached.</notice>
+                <dataScope>is_active</dataScope>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="title" sortOrder="20" formElement="input">
+            <settings>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>text</dataType>
+                <label translate="true">Title</label>
+                <dataScope>title</dataScope>
+            </settings>
+        </field>
+        <field name="url_key" sortOrder="30" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">URL Key</label>
+                <notice translate="true">Empty: made from the title. Lowercase letters, digits and dashes.</notice>
+                <dataScope>url_key</dataScope>
+            </settings>
+        </field>
+        <field name="published_at" sortOrder="40" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Publish Date</label>
+                <notice translate="true">YYYY-MM-DD HH:MM in the store time zone. A future date schedules the post. Empty: when it is published.</notice>
+                <dataScope>published_at</dataScope>
+            </settings>
+        </field>
+        <field name="author_id" sortOrder="50" formElement="select">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Author</label>
+                <dataScope>author_id</dataScope>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Zero\Blog\Model\Source\Authors"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="store_ids" sortOrder="60" formElement="multiselect">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="array">
+                        <item name="0" xsi:type="string">0</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Store Views</label>
+                <notice translate="true">A post in a store view with another language is a separate post.</notice>
+                <dataScope>store_ids</dataScope>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Magento\Cms\Ui\Component\Listing\Column\Cms\Options"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+        <field name="excerpt" sortOrder="70" formElement="textarea">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Excerpt</label>
+                <notice translate="true">One or two sentences: shown in lists, under the title, and as the meta description when that is empty.</notice>
+                <dataScope>excerpt</dataScope>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>3</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+        <field name="allow_comments" sortOrder="80" formElement="checkbox">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">1</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Allow Comments</label>
+                <dataScope>allow_comments</dataScope>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+    </fieldset>
+    <fieldset name="image_set" sortOrder="20">
+        <settings>
+            <label translate="true">Featured Image</label>
+            <collapsible>true</collapsible>
+            <opened>true</opened>
+        </settings>
+        <field name="image" sortOrder="10" formElement="imageUploader">
+            <settings>
+                <label translate="true">Image</label>
+                <notice translate="true">At least 1200 px wide. Cropped to 16:9 and converted to WebP on the storefront.</notice>
+                <componentType>imageUploader</componentType>
+                <dataScope>image</dataScope>
+            </settings>
+            <formElements>
+                <imageUploader>
+                    <settings>
+                        <allowedExtensions>jpg jpeg png gif</allowedExtensions>
+                        <maxFileSize>10485760</maxFileSize>
+                        <uploaderConfig>
+                            <param xsi:type="string" name="url">zero_blog/image/upload</param>
+                        </uploaderConfig>
+                    </settings>
+                </imageUploader>
+            </formElements>
+        </field>
+        <field name="image_alt" sortOrder="20" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Alt Text</label>
+                <notice translate="true">What the image shows, for screen readers and search engines.</notice>
+                <dataScope>image_alt</dataScope>
+            </settings>
+        </field>
+    </fieldset>
+    <fieldset name="organize" sortOrder="30">
+        <settings>
+            <label translate="true">Categories, Tags and Products</label>
+            <collapsible>true</collapsible>
+            <opened>true</opened>
+        </settings>
+        <field name="category_ids" sortOrder="10" formElement="multiselect">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Categories</label>
+                <dataScope>category_ids</dataScope>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Zero\Blog\Model\Source\Categories"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+        <field name="tags" sortOrder="20" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Tags</label>
+                <notice translate="true">Comma separated. New tags are created.</notice>
+                <dataScope>tags</dataScope>
+            </settings>
+        </field>
+        <field name="products" sortOrder="30" formElement="textarea">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Products</label>
+                <notice translate="true">SKUs, comma separated, in order. Shown under the post; the post shows on their product pages.</notice>
+                <dataScope>products</dataScope>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>2</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+    </fieldset>
+    <fieldset name="seo" sortOrder="40">
+        <settings>
+            <label translate="true">Search Engine Optimization</label>
+            <collapsible>true</collapsible>
+            <opened>false</opened>
+        </settings>
+        <field name="meta_title" sortOrder="10" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Meta Title</label>
+                <notice translate="true">Empty: the title.</notice>
+                <dataScope>meta_title</dataScope>
+            </settings>
+        </field>
+        <field name="meta_description" sortOrder="20" formElement="textarea">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Meta Description</label>
+                <notice translate="true">About 150 characters. Empty: the excerpt.</notice>
+                <dataScope>meta_description</dataScope>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>3</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+        <field name="meta_robots" sortOrder="30" formElement="select">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Meta Robots</label>
+                <dataScope>meta_robots</dataScope>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Zero\Blog\Model\Source\Robots"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="canonical_url" sortOrder="40" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Canonical URL</label>
+                <notice translate="true">Only when the post was first published elsewhere: that address. Empty: the post itself.</notice>
+                <dataScope>canonical_url</dataScope>
+            </settings>
+        </field>
+    </fieldset>
+</form>

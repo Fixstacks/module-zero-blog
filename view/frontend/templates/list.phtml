@@ -1,0 +1,134 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * A list of posts: the blog index, a category, a tag or an author. On the
+ * index's first page the newest post is a wide card.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+/** @var \Zero\Blog\ViewModel\Blog $view */
+$view = $block->getData('view');
+$entity = $view->entity();
+$type = $view->type();
+$posts = $view->posts();
+$pagination = $view->pagination();
+$card = $block->getChildBlock('card');
+$eyebrow = match ($type) {
+    'category' => __('Category'),
+    'tag' => __('Tag'),
+    'author' => __('Author'),
+    default => '',
+};
+$heading = $view->heading();
+$words = explode(' ', $heading);
+$accent = count($words) > 1 && count($words) <= 5 ? array_pop($words) : '';
+$featuredFirst = $type === 'index' && $view->page() === 1 && count($posts) > 1;
+?>
+<div class="zero-blog-list flex flex-col gap-10 sm:gap-14">
+    <header class="flex flex-col gap-4 max-w-3xl">
+        <?php if ($type === 'author' && $entity): ?>
+            <div class="flex items-center gap-5">
+                <?= /* @noEscape */ $view->avatar((string) $entity->getData('image'), (string) $entity->getData('name'), 96, 'size-24 object-cover bg-base-200') ?>
+                <div class="flex flex-col gap-1">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-base-content/70"><?= $escaper->escapeHtml($eyebrow) ?></span>
+                    <h1 class="text-4xl sm:text-5xl font-medium tracking-tight text-balance"><?= $escaper->escapeHtml($heading) ?></h1>
+                    <?php if ((string) $entity->getData('job_title') !== ''): ?>
+                        <p class="text-base-content/70"><?= $escaper->escapeHtml($entity->getData('job_title')) ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php if ((string) $entity->getData('bio') !== ''): ?>
+                <div class="flex flex-col gap-3 text-lg leading-relaxed"><?= /* @noEscape */ $view->paragraphs((string) $entity->getData('bio')) ?></div>
+            <?php endif; ?>
+            <?php $links = $view->authorLinks($entity); ?>
+            <?php if ($links): ?>
+                <ul class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+                    <?php foreach ($links as $label => $href): ?>
+                        <li><a href="<?= $escaper->escapeUrl($href) ?>" rel="me noopener" class="link"><?= $escaper->escapeHtml($label) ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        <?php else: ?>
+            <?php if ($eyebrow !== ''): ?>
+                <span class="text-xs font-semibold uppercase tracking-widest text-base-content/70"><?= $escaper->escapeHtml($eyebrow) ?></span>
+            <?php endif; ?>
+            <h1 class="text-5xl sm:text-6xl font-medium tracking-tight text-balance">
+                <?= $escaper->escapeHtml(implode(' ', $words)) ?>
+                <?php if ($accent !== ''): ?><em class="font-display text-secondary"><?= $escaper->escapeHtml($accent) ?></em><?php endif; ?>
+            </h1>
+            <?php $intro = $view->introduction(); ?>
+            <?php if ($intro !== ''): ?>
+                <div class="flex flex-col gap-3 text-lg text-base-content/80 leading-relaxed"><?= /* @noEscape */ $view->paragraphs($intro) ?></div>
+            <?php endif; ?>
+        <?php endif; ?>
+    </header>
+
+    <?php $nav = $view->categoryNav(); ?>
+    <?php if ($nav && $type !== 'author'): ?>
+        <nav aria-label="<?= $escaper->escapeHtmlAttr(__('Blog categories')) ?>" class="-mt-4 sm:-mt-6">
+            <ul class="flex flex-wrap gap-2">
+                <li>
+                    <a href="<?= $escaper->escapeUrl($view->indexUrl()) ?>"
+                       class="btn btn-sm <?= $type === 'index' ? 'btn-neutral' : 'btn-outline' ?>"
+                       <?= $type === 'index' ? 'aria-current="page"' : '' ?>><?= $escaper->escapeHtml(__('All posts')) ?></a>
+                </li>
+                <?php foreach ($nav as $item): ?>
+                    <li>
+                        <a href="<?= $escaper->escapeUrl($item['url']) ?>"
+                           class="btn btn-sm <?= $item['current'] ? 'btn-neutral' : 'btn-outline' ?>"
+                           <?= $item['current'] ? 'aria-current="page"' : '' ?>><?= $escaper->escapeHtml($item['title']) ?></a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
+    <?php endif; ?>
+
+    <?php if (!$posts): ?>
+        <p class="text-lg text-base-content/70"><?= $escaper->escapeHtml(__('No posts here yet.')) ?></p>
+    <?php else: ?>
+        <?php if ($featuredFirst): ?>
+            <?= /* @noEscape */ $card->setData('post', array_shift($posts))->setData('featured', true)->setData('eager', true)->toHtml() ?>
+            <?php $card->unsetData('featured')->unsetData('eager'); ?>
+        <?php endif; ?>
+        <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            <?php foreach ($posts as $post): ?>
+                <?= /* @noEscape */ $card->setData('post', $post)->toHtml() ?>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($pagination): ?>
+        <nav aria-label="<?= $escaper->escapeHtmlAttr(__('Pages')) ?>" class="flex justify-center">
+            <ul class="join">
+                <?php if ($pagination['prev'] !== ''): ?>
+                    <li><a href="<?= $escaper->escapeUrl($pagination['prev']) ?>" rel="prev" class="join-item btn"><?= $escaper->escapeHtml(__('Previous')) ?></a></li>
+                <?php endif; ?>
+                <?php $last = 0; ?>
+                <?php foreach ($pagination['pages'] as $number => $href): ?>
+                    <?php if ($number - $last > 1): ?>
+                        <li><span class="join-item btn btn-disabled" aria-hidden="true">…</span></li>
+                    <?php endif; ?>
+                    <li>
+                        <a href="<?= $escaper->escapeUrl($href) ?>" class="join-item btn <?= $number === $pagination['current'] ? 'btn-neutral' : '' ?>"
+                           <?= $number === $pagination['current'] ? 'aria-current="page"' : '' ?>>
+                            <span class="sr-only"><?= $escaper->escapeHtml(__('Page')) ?> </span><?= (int) $number ?>
+                        </a>
+                    </li>
+                    <?php $last = $number; ?>
+                <?php endforeach; ?>
+                <?php if ($pagination['next'] !== ''): ?>
+                    <li><a href="<?= $escaper->escapeUrl($pagination['next']) ?>" rel="next" class="join-item btn"><?= $escaper->escapeHtml(__('Next')) ?></a></li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+    <?php endif; ?>
+
+    <?php if ($view->rssUrl() !== '' && $type === 'index'): ?>
+        <p class="text-sm text-base-content/70">
+            <a href="<?= $escaper->escapeUrl($view->rssUrl()) ?>" class="link"><?= $escaper->escapeHtml(__('Subscribe via RSS')) ?></a>
+        </p>
+    <?php endif; ?>
+</div>

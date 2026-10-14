@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+
+    Zero Blog. A post's body is Zero CMS content (zero_cms_content, type
+    zero_blog_post); these tables hold everything around it.
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="zero_blog_author" resource="default" engine="innodb" comment="Zero Blog Author">
+        <column xsi:type="int" name="author_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Author ID"/>
+        <column xsi:type="varchar" name="name" nullable="false" length="255" comment="Name"/>
+        <column xsi:type="varchar" name="url_key" nullable="false" length="255" comment="URL Key"/>
+        <column xsi:type="varchar" name="job_title" nullable="true" length="255" comment="Job Title"/>
+        <column xsi:type="text" name="bio" nullable="true" comment="Bio"/>
+        <column xsi:type="varchar" name="image" nullable="true" length="255" comment="Photo (media path)"/>
+        <column xsi:type="varchar" name="website" nullable="true" length="255" comment="Website"/>
+        <column xsi:type="varchar" name="linkedin" nullable="true" length="255" comment="LinkedIn"/>
+        <column xsi:type="varchar" name="twitter" nullable="true" length="255" comment="X (Twitter)"/>
+        <column xsi:type="varchar" name="meta_title" nullable="true" length="255" comment="Meta Title"/>
+        <column xsi:type="text" name="meta_description" nullable="true" comment="Meta Description"/>
+        <column xsi:type="smallint" name="is_active" padding="5" unsigned="true" nullable="false" default="1" comment="Enabled"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="author_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="ZERO_BLOG_AUTHOR_URL_KEY">
+            <column name="url_key"/>
+        </constraint>
+    </table>
+
+    <table name="zero_blog_post" resource="default" engine="innodb" comment="Zero Blog Post">
+        <column xsi:type="int" name="post_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Post ID"/>
+        <column xsi:type="varchar" name="title" nullable="false" length="255" comment="Title"/>
+        <column xsi:type="varchar" name="url_key" nullable="false" length="255" comment="URL Key"/>
+        <column xsi:type="text" name="excerpt" nullable="true" comment="Excerpt"/>
+        <column xsi:type="varchar" name="image" nullable="true" length="255" comment="Featured Image (media path)"/>
+        <column xsi:type="varchar" name="image_alt" nullable="true" length="255" comment="Featured Image Alt Text"/>
+        <column xsi:type="int" name="author_id" padding="10" unsigned="true" nullable="true" comment="Author ID"/>
+        <column xsi:type="smallint" name="is_active" padding="5" unsigned="true" nullable="false" default="0" comment="Published"/>
+        <column xsi:type="datetime" name="published_at" nullable="true" comment="Publish Date (UTC)"/>
+        <column xsi:type="smallint" name="allow_comments" padding="5" unsigned="true" nullable="false" default="1" comment="Allow Comments"/>
+        <column xsi:type="varchar" name="meta_title" nullable="true" length="255" comment="Meta Title"/>
+        <column xsi:type="text" name="meta_description" nullable="true" comment="Meta Description"/>
+        <column xsi:type="varchar" name="meta_robots" nullable="true" length="32" comment="Meta Robots"/>
+        <column xsi:type="varchar" name="canonical_url" nullable="true" length="512" comment="Canonical URL Override"/>
+        <column xsi:type="int" name="reading_time" padding="10" unsigned="true" nullable="false" default="0" comment="Reading Time (minutes)"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="ZERO_BLOG_POST_AUTHOR_ID_ZERO_BLOG_AUTHOR_AUTHOR_ID"
+                    table="zero_blog_post" column="author_id" referenceTable="zero_blog_author"
+                    referenceColumn="author_id" onDelete="SET NULL"/>
+        <index referenceId="ZERO_BLOG_POST_URL_KEY" indexType="btree">
+            <column name="url_key"/>
+        </index>
+        <index referenceId="ZERO_BLOG_POST_ACTIVE_PUBLISHED" indexType="btree">
+            <column name="is_active"/>
+            <column name="published_at"/>
+        </index>
+    </table>
+
+    <!-- Store views a post shows in (0 = all). URL keys are unique per store view. -->
+    <table name="zero_blog_post_store" resource="default" engine="innodb" comment="Zero Blog Post Store">
+        <column xsi:type="int" name="post_id" padding="10" unsigned="true" nullable="false" comment="Post ID"/>
+        <column xsi:type="smallint" name="store_id" padding="5" unsigned="true" nullable="false" comment="Store ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+            <column name="store_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="ZERO_BLOG_POST_STORE_POST_ID_ZERO_BLOG_POST_POST_ID"
+                    table="zero_blog_post_store" column="post_id" referenceTable="zero_blog_post"
+                    referenceColumn="post_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="ZERO_BLOG_POST_STORE_STORE_ID_STORE_STORE_ID"
+                    table="zero_blog_post_store" column="store_id" referenceTable="store"
+                    referenceColumn="store_id" onDelete="CASCADE"/>
+    </table>
+
+    <table name="zero_blog_category" resource="default" engine="innodb" comment="Zero Blog Category">
+        <column xsi:type="int" name="category_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Category ID"/>
+        <column xsi:type="varchar" name="title" nullable="false" length="255" comment="Title"/>
+        <column xsi:type="varchar" name="url_key" nullable="false" length="255" comment="URL Key"/>
+        <column xsi:type="text" name="description" nullable="true" comment="Description"/>
+        <column xsi:type="varchar" name="meta_title" nullable="true" length="255" comment="Meta Title"/>
+        <column xsi:type="text" name="meta_description" nullable="true" comment="Meta Description"/>
+        <column xsi:type="int" name="position" padding="10" unsigned="false" nullable="false" default="0" comment="Position"/>
+        <column xsi:type="smallint" name="is_active" padding="5" unsigned="true" nullable="false" default="1" comment="Enabled"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="category_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="ZERO_BLOG_CATEGORY_URL_KEY">
+            <column name="url_key"/>
+        </constraint>
+    </table>
+
+    <table name="zero_blog_post_category" resource="default" engine="innodb" comment="Zero Blog Post Category">
+        <column xsi:type="int" name="post_id" padding="10" unsigned="true" nullable="false" comment="Post ID"/>
+        <column xsi:type="int" name="category_id" padding="10" unsigned="true" nullable="false" comment="Category ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+            <column name="category_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="ZERO_BLOG_POST_CATEGORY_POST_ID_ZERO_BLOG_POST_POST_ID"
+                    table="zero_blog_post_category" column="post_id" referenceTable="zero_blog_post"
+                    referenceColumn="post_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="ZERO_BLOG_POST_CTGR_CTGR_ID_ZERO_BLOG_CTGR_CTGR_ID"
+                    table="zero_blog_post_category" column="category_id" referenceTable="zero_blog_category"
+                    referenceColumn="category_id" onDelete="CASCADE"/>
+        <index referenceId="ZERO_BLOG_POST_CATEGORY_CATEGORY_ID" indexType="btree">
+            <column name="category_id"/>
+        </index>
+    </table>
+
+    <table name="zero_blog_tag" resource="default" engine="innodb" comment="Zero Blog Tag">
+        <column xsi:type="int" name="tag_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Tag ID"/>
+        <column xsi:type="varchar" name="title" nullable="false" length="255" comment="Title"/>
+        <column xsi:type="varchar" name="url_key" nullable="false" length="255" comment="URL Key"/>
+        <column xsi:type="text" name="description" nullable="true" comment="Description"/>
+        <column xsi:type="varchar" name="meta_title" nullable="true" length="255" comment="Meta Title"/>
+        <column xsi:type="text" name="meta_description" nullable="true" comment="Meta Description"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="tag_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="ZERO_BLOG_TAG_URL_KEY">
+            <column name="url_key"/>
+        </constraint>
+    </table>
+
+    <table name="zero_blog_post_tag" resource="default" engine="innodb" comment="Zero Blog Post Tag">
+        <column xsi:type="int" name="post_id" padding="10" unsigned="true" nullable="false" comment="Post ID"/>
+        <column xsi:type="int" name="tag_id" padding="10" unsigned="true" nullable="false" comment="Tag ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+            <column name="tag_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="ZERO_BLOG_POST_TAG_POST_ID_ZERO_BLOG_POST_POST_ID"
+                    table="zero_blog_post_tag" column="post_id" referenceTable="zero_blog_post"
+                    referenceColumn="post_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="ZERO_BLOG_POST_TAG_TAG_ID_ZERO_BLOG_TAG_TAG_ID"
+                    table="zero_blog_post_tag" column="tag_id" referenceTable="zero_blog_tag"
+                    referenceColumn="tag_id" onDelete="CASCADE"/>
+        <index referenceId="ZERO_BLOG_POST_TAG_TAG_ID" indexType="btree">
+            <column name="tag_id"/>
+        </index>
+    </table>
+
+    <!-- Products a post is about: shown under the post, and the post on their pages. -->
+    <table name="zero_blog_post_product" resource="default" engine="innodb" comment="Zero Blog Post Product">
+        <column xsi:type="int" name="post_id" padding="10" unsigned="true" nullable="false" comment="Post ID"/>
+        <column xsi:type="int" name="product_id" padding="10" unsigned="true" nullable="false" comment="Product ID"/>
+        <column xsi:type="int" name="position" padding="10" unsigned="true" nullable="false" default="0" comment="Position"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+            <column name="product_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="ZERO_BLOG_POST_PRODUCT_POST_ID_ZERO_BLOG_POST_POST_ID"
+                    table="zero_blog_post_product" column="post_id" referenceTable="zero_blog_post"
+                    referenceColumn="post_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="ZERO_BLOG_POST_PRD_PRD_ID_CAT_PRD_ENTT_ENTT_ID"
+                    table="zero_blog_post_product" column="product_id" referenceTable="catalog_product_entity"
+                    referenceColumn="entity_id" onDelete="CASCADE"/>
+        <index referenceId="ZERO_BLOG_POST_PRODUCT_PRODUCT_ID" indexType="btree">
+            <column name="product_id"/>
+        </index>
+    </table>
+
+    <table name="zero_blog_comment" resource="default" engine="innodb" comment="Zero Blog Comment">
+        <column xsi:type="int" name="comment_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Comment ID"/>
+        <column xsi:type="int" name="post_id" padding="10" unsigned="true" nullable="false" comment="Post ID"/>
+        <column xsi:type="smallint" name="store_id" padding="5" unsigned="true" nullable="true" comment="Store ID"/>
+        <column xsi:type="int" name="customer_id" padding="10" unsigned="true" nullable="true" comment="Customer ID"/>
+        <column xsi:type="varchar" name="author_name" nullable="false" length="100" comment="Name"/>
+        <column xsi:type="varchar" name="author_email" nullable="false" length="255" comment="Email"/>
+        <column xsi:type="text" name="content" nullable="false" comment="Comment"/>
+        <column xsi:type="smallint" name="status" padding="5" unsigned="true" nullable="false" default="0" comment="0 pending, 1 approved, 2 rejected"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="comment_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="ZERO_BLOG_COMMENT_POST_ID_ZERO_BLOG_POST_POST_ID"
+                    table="zero_blog_comment" column="post_id" referenceTable="zero_blog_post"
+                    referenceColumn="post_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="ZERO_BLOG_COMMENT_STORE_ID_STORE_STORE_ID"
+                    table="zero_blog_comment" column="store_id" referenceTable="store"
+                    referenceColumn="store_id" onDelete="SET NULL"/>
+        <index referenceId="ZERO_BLOG_COMMENT_POST_STATUS" indexType="btree">
+            <column name="post_id"/>
+            <column name="status"/>
+        </index>
+    </table>
+</schema>

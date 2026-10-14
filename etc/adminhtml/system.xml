@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="zero_blog" translate="label" type="text" sortOrder="16" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Blog</label>
+            <tab>zero</tab>
+            <resource>Zero_Blog::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="route" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Blog Path</label>
+                    <comment>example.com/blog. Lowercase letters, digits, - and _. Changing it changes every blog URL: add URL rewrites for the old ones.</comment>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="title" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Blog Name</label>
+                    <comment>The index page's heading, the breadcrumb and the RSS feed's name.</comment>
+                </field>
+                <field id="introduction" translate="label" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Introduction</label>
+                </field>
+                <field id="meta_title" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Meta Title</label>
+                </field>
+                <field id="meta_description" translate="label" type="textarea" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Meta Description</label>
+                </field>
+                <field id="posts_per_page" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Posts per Page</label>
+                    <validate>validate-digits validate-digits-range digits-range-1-60</validate>
+                </field>
+            </group>
+            <group id="comments" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Comments</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enabled</label>
+                    <comment>Every comment waits for approval in Content > Blog > Comments. A post can also turn its own comments off.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="products" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Products</label>
+                <field id="show_on_product_page" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>"From the Blog" on Product Pages</label>
+                    <comment>Up to three posts linked to the product.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="rss" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>RSS</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>RSS Feed</label>
+                    <comment>example.com/blog/rss.xml, the 20 newest posts.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="seo" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Search Engines</label>
+                <field id="publisher_logo" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Publisher Logo URL</label>
+                    <comment>For structured data (schema.org Organization). Empty: the store's header logo.</comment>
+                </field>
+            </group>
+            <group id="sitemap" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>XML Sitemap</label>
+                <comment>Posts, categories and authors are added to the sitemaps in Marketing > SEO &amp; Search > Site Map.</comment>
+                <field id="post_priority" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Posts: Priority</label>
+                    <source_model>Zero\Blog\Model\Config\Source\Priority</source_model>
+                </field>
+                <field id="post_changefreq" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Posts: Frequency</label>
+                    <source_model>Magento\Sitemap\Model\Config\Source\Frequency</source_model>
+                </field>
+                <field id="category_priority" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Categories and Authors: Priority</label>
+                    <source_model>Zero\Blog\Model\Config\Source\Priority</source_model>
+                </field>
+                <field id="category_changefreq" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Categories and Authors: Frequency</label>
+                    <source_model>Magento\Sitemap\Model\Config\Source\Frequency</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

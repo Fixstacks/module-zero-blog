@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+    Copyright © 2026 Roman Pasichnyk
+    SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- /blog/... (Controller\Router): after URL rewrites (old URLs redirected by imports), before CMS pages. -->
+    <type name="Magento\Framework\App\RouterList">
+        <arguments>
+            <argument name="routerList" xsi:type="array">
+                <item name="zero_blog" xsi:type="array">
+                    <item name="class" xsi:type="string">Zero\Blog\Controller\Router</item>
+                    <item name="disable" xsi:type="boolean">false</item>
+                    <item name="sortOrder" xsi:type="string">50</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Zero_Search (when enabled): posts it finds. -->
+    <type name="Zero\Search\Model\Sources">
+        <arguments>
+            <argument name="sources" xsi:type="array">
+                <item name="posts" xsi:type="array">
+                    <item name="source" xsi:type="object">Zero\Blog\Model\Search\PostSource</item>
+                    <item name="sortOrder" xsi:type="number">30</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+</config>

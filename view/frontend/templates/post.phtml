@@ -1,0 +1,149 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * A post. The body is Zero CMS content; its headings (h2/h3 with ids) make
+ * the table of contents, shown beside the text on wide screens and as a
+ * <details> above it on narrow ones (no JS either way).
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+/** @var \Zero\Blog\ViewModel\Blog $view */
+$view = $block->getData('view');
+/** @var \Zero\Blog\Model\Post $post */
+$post = $view->entity();
+$author = $view->author($post);
+$categories = $view->categories($post);
+$tags = $view->tags($post);
+$body = $view->body($post, $block->getLayout());
+$toc = $view->toc($body);
+$showToc = count(array_filter($toc, static fn ($h) => $h['level'] === 2)) >= 3;
+$published = (string) $post->getData('published_at');
+$picture = $view->picture(
+    (string) $post->getData('image'),
+    (string) $post->getData('image_alt'),
+    '(min-width: 1280px) 1200px, 100vw',
+    true,
+    'w-full h-full object-cover'
+);
+$tocList = function (string $class) use ($toc, $escaper): string {
+    $html = '<ol class="' . $escaper->escapeHtmlAttr($class) . '">';
+    foreach ($toc as $heading) {
+        $html .= sprintf(
+            '<li class="%s"><a href="#%s" class="hover:underline">%s</a></li>',
+            $heading['level'] === 3 ? 'ps-4 text-base-content/70' : '',
+            $escaper->escapeHtmlAttr($heading['id']),
+            $escaper->escapeHtml($heading['text'])
+        );
+    }
+
+    return $html . '</ol>';
+};
+?>
+<article class="zero-blog-post flex flex-col gap-10 sm:gap-14">
+    <header class="flex flex-col gap-5 max-w-3xl">
+        <?php if ($categories): ?>
+            <ul class="flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold uppercase tracking-widest">
+                <?php foreach ($categories as $category): ?>
+                    <li><a href="<?= $escaper->escapeUrl($category['url']) ?>" class="text-secondary hover:underline"><?= $escaper->escapeHtml($category['title']) ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-balance"><?= $escaper->escapeHtml($post->getData('title')) ?></h1>
+        <?php if ((string) $post->getData('excerpt') !== ''): ?>
+            <p class="text-xl text-base-content/80 leading-relaxed text-pretty"><?= $escaper->escapeHtml($post->getData('excerpt')) ?></p>
+        <?php endif; ?>
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-base-content/70">
+            <?php if ($author): ?>
+                <a href="<?= $escaper->escapeUrl($view->authorUrl($author)) ?>" rel="author" class="flex items-center gap-2 text-base-content hover:underline">
+                    <?= /* @noEscape */ $view->avatar((string) $author->getData('image'), '', 32, 'size-8 object-cover bg-base-200') ?>
+                    <span class="font-medium"><?= $escaper->escapeHtml($author->getData('name')) ?></span>
+                </a>
+                <span aria-hidden="true">·</span>
+            <?php endif; ?>
+            <time datetime="<?= $escaper->escapeHtmlAttr($view->isoDate($published)) ?>"><?= $escaper->escapeHtml($view->date($published)) ?></time>
+            <?php if ($view->wasUpdated($post)): ?>
+                <span aria-hidden="true">·</span>
+                <span><?= $escaper->escapeHtml(__('Updated')) ?>
+                    <time datetime="<?= $escaper->escapeHtmlAttr($view->isoDate((string) $post->getData('updated_at'))) ?>"><?= $escaper->escapeHtml($view->date((string) $post->getData('updated_at'))) ?></time>
+                </span>
+            <?php endif; ?>
+            <span aria-hidden="true">·</span>
+            <span><?= $escaper->escapeHtml(__('%1 min read', $view->readingTime($post))) ?></span>
+        </div>
+    </header>
+
+    <?php if ($picture !== ''): ?>
+        <figure class="aspect-video overflow-hidden bg-base-200 -mx-4 sm:mx-0"><?= /* @noEscape */ $picture ?></figure>
+    <?php endif; ?>
+
+    <div class="grid gap-10 <?= $showToc ? 'lg:grid-cols-[14rem_minmax(0,1fr)] xl:gap-16' : '' ?>">
+        <?php if ($showToc): ?>
+            <nav aria-labelledby="zero-blog-toc" class="hidden lg:block">
+                <div class="sticky top-6 flex flex-col gap-3 text-sm">
+                    <h2 id="zero-blog-toc" class="text-xs font-semibold uppercase tracking-widest text-base-content/70"><?= $escaper->escapeHtml(__('In this article')) ?></h2>
+                    <?= /* @noEscape */ $tocList('flex flex-col gap-2') ?>
+                </div>
+            </nav>
+        <?php endif; ?>
+        <div class="flex flex-col gap-10 min-w-0 max-w-3xl">
+            <?php if ($showToc): ?>
+                <details class="lg:hidden border border-base-300 bg-base-200/50">
+                    <summary class="cursor-pointer px-4 py-3 font-medium"><?= $escaper->escapeHtml(__('In this article')) ?></summary>
+                    <?= /* @noEscape */ $tocList('flex flex-col gap-2 px-4 pb-4 text-sm') ?>
+                </details>
+            <?php endif; ?>
+
+            <div class="zero-blog-body"><?= /* @noEscape */ $body ?></div>
+
+            <?php if ($tags): ?>
+                <ul class="flex flex-wrap gap-2" aria-label="<?= $escaper->escapeHtmlAttr(__('Tags')) ?>">
+                    <?php foreach ($tags as $tag): ?>
+                        <li><a href="<?= $escaper->escapeUrl($tag['url']) ?>" rel="tag" class="badge badge-outline badge-lg hover:bg-base-200">#<?= $escaper->escapeHtml($tag['title']) ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-base-300 pt-6 text-sm">
+                <span class="text-xs font-semibold uppercase tracking-widest text-base-content/70"><?= $escaper->escapeHtml(__('Share')) ?></span>
+                <?php foreach ($view->shareLinks($post) as $label => $href): ?>
+                    <a href="<?= $escaper->escapeUrl($href) ?>" class="link" rel="noopener" target="_blank"><?= $escaper->escapeHtml($label) ?><span class="sr-only"> <?= $escaper->escapeHtml(__('(opens in a new tab)')) ?></span></a>
+                <?php endforeach; ?>
+            </div>
+
+            <?php if ($author): ?>
+                <aside class="flex gap-5 bg-base-200 p-6" aria-label="<?= $escaper->escapeHtmlAttr(__('About the author')) ?>">
+                    <?= /* @noEscape */ $view->avatar((string) $author->getData('image'), '', 64, 'size-16 shrink-0 object-cover bg-base-300') ?>
+                    <div class="flex flex-col gap-2">
+                        <p class="text-xs font-semibold uppercase tracking-widest text-base-content/70"><?= $escaper->escapeHtml(__('Written by')) ?></p>
+                        <p class="text-lg font-medium"><a href="<?= $escaper->escapeUrl($view->authorUrl($author)) ?>" rel="author" class="hover:underline"><?= $escaper->escapeHtml($author->getData('name')) ?></a>
+                            <?php if ((string) $author->getData('job_title') !== ''): ?><span class="text-base font-normal text-base-content/70">, <?= $escaper->escapeHtml($author->getData('job_title')) ?></span><?php endif; ?>
+                        </p>
+                        <?php if ((string) $author->getData('bio') !== ''): ?>
+                            <p class="text-base-content/80"><?= $escaper->escapeHtml(mb_strimwidth((string) $author->getData('bio'), 0, 280, '…')) ?></p>
+                        <?php endif; ?>
+                    </div>
+                </aside>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <?= /* @noEscape */ $view->productsHtml($post, $block->getLayout()) ?>
+
+    <?php $related = $view->related($post); ?>
+    <?php if ($related): ?>
+        <section class="flex flex-col gap-8 border-t border-base-300 pt-10" aria-labelledby="zero-blog-related">
+            <h2 id="zero-blog-related" class="text-3xl font-medium tracking-tight"><?= $escaper->escapeHtml(__('Keep reading')) ?></h2>
+            <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+                <?php $card = $block->getChildBlock('card'); ?>
+                <?php foreach ($related as $item): ?>
+                    <?= /* @noEscape */ $card->setData('post', $item)->setData('heading', 'h3')->toHtml() ?>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <?= $block->getChildHtml('comments') ?>
+</article>

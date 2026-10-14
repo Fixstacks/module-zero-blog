@@ -1,0 +1,26 @@
+<?php
+/**
+ * Copyright © 2026 Roman Pasichnyk
+ * SPDX-License-Identifier: OSL-3.0 OR AFL-3.0
+ *
+ * "From the blog" on a product page: posts linked to this product.
+ *
+ * @var \Zero\Blog\Block\ProductPosts $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+$posts = $block->posts();
+if (!$posts) {
+    return;
+}
+$card = $block->getChildBlock('card');
+?>
+<section class="zero-blog-product-posts flex flex-col gap-8 py-10" aria-labelledby="zero-blog-product-posts">
+    <h2 id="zero-blog-product-posts" class="text-3xl font-medium tracking-tight">
+        <?= $escaper->escapeHtml(__('From the')) ?> <em class="font-display text-secondary"><?= $escaper->escapeHtml(__('blog')) ?></em>
+    </h2>
+    <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+        <?php foreach ($posts as $post): ?>
+            <?= /* @noEscape */ $card->setData('post', $post)->setData('heading', 'h3')->toHtml() ?>
+        <?php endforeach; ?>
+    </div>
+</section>
