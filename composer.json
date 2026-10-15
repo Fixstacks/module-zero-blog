@@ -2,7 +2,7 @@
     "name": "fixstacks/module-zero-blog",
     "description": "Zero for Magento Open Source: a blog: posts written in the Zero CMS editor, categories, tags, authors, products in posts, comments.",
     "type": "magento2-module",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
