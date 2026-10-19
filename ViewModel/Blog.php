@@ -135,15 +135,21 @@ class Blog implements ArgumentInterface
     }
 
     /**
-     * Enabled categories as links, the current one marked.
+     * Enabled categories with a post in this store view, as links, the
+     * current one marked.
      *
      * @return array<int, array{title: string, url: string, current: bool}>
      */
     public function categoryNav(): array
     {
         $entity = $this->current->entity();
+        // Only categories with a post this store view shows (categories are global).
+        $used = $this->posts->usedCategoryIds();
         $nav = [];
         foreach ($this->lookup->categories() as $category) {
+            if (!in_array((int) $category->getId(), $used, true)) {
+                continue;
+            }
             $nav[] = [
                 'title' => (string) $category->getData('title'),
                 'url' => $this->url->category($category),

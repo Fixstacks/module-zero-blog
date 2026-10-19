@@ -32,11 +32,12 @@ class Collection extends AbstractCollection
     }
 
     /**
-     * Published, date reached, in the store view, newest first.
+     * Published, date reached, in the store view (and, unless
+     * $withAllStoreViews is false, the posts set to All Store Views), newest first.
      *
      * @return $this
      */
-    public function addVisibleFilter(int $storeId, ?string $nowUtc = null): self
+    public function addVisibleFilter(int $storeId, ?string $nowUtc = null, bool $withAllStoreViews = true): self
     {
         $this->addFieldToFilter('main_table.is_active', 1)
             ->addFieldToFilter('main_table.published_at', ['lteq' => $nowUtc ?? gmdate('Y-m-d H:i:s')]);
@@ -45,7 +46,7 @@ class Collection extends AbstractCollection
             $this->getConnection()->select()
                 ->from(['s' => $this->getTable('zero_blog_post_store')], ['post_id'])
                 ->where('s.post_id = main_table.post_id')
-                ->where('s.store_id IN (?)', [0, $storeId])
+                ->where('s.store_id IN (?)', $withAllStoreViews ? [0, $storeId] : [$storeId])
         );
         $this->getSelect()->order(['main_table.published_at DESC', 'main_table.post_id DESC']);
 

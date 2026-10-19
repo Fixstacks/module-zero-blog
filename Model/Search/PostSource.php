@@ -37,7 +37,7 @@ class PostSource implements SourceInterface
         if (!$this->config->isEnabled($storeId)) {
             return [];
         }
-        $collection = $this->collectionFactory->create()->addVisibleFilter($storeId)->setPageSize($limit);
+        $collection = $this->collectionFactory->create()->addVisibleFilter($storeId, null, !$this->config->ownPostsOnly($storeId))->setPageSize($limit);
         foreach (Sources::likePatterns($query) as $pattern) {
             $collection->addFieldToFilter('main_table.title', ['like' => $pattern]);
         }

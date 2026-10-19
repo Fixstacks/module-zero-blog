@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Zero\Blog\Model\Page;
 
+use Magento\Framework\DB\Select;
 use Magento\Store\Model\StoreManagerInterface;
 use Zero\Blog\Model\Author;
 use Zero\Blog\Model\Category;
@@ -109,9 +110,26 @@ class Posts
         return array_values($this->visible()->setPageSize($limit)->getItems());
     }
 
+    /**
+     * Ids of the categories with a post the store view shows.
+     *
+     * @return int[]
+     */
+    public function usedCategoryIds(): array
+    {
+        $collection = $this->visible();
+        $select = $collection->getSelect()
+            ->reset(Select::COLUMNS)
+            ->reset(Select::ORDER)
+            ->join(['pc' => $collection->getTable('zero_blog_post_category')], 'pc.post_id = main_table.post_id', ['category_id'])
+            ->distinct(true);
+
+        return array_map('intval', $collection->getConnection()->fetchCol($select));
+    }
+
     private function visible(): Collection
     {
-        return $this->collectionFactory->create()->addVisibleFilter($this->storeId())->addLinks();
+        return $this->collectionFactory->create()->addVisibleFilter($this->storeId(), null, !$this->config->ownPostsOnly($this->storeId()))->addLinks();
     }
 
     private function storeId(): int

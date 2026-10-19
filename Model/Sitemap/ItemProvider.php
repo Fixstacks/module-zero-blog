@@ -46,7 +46,7 @@ class ItemProvider implements ItemProviderInterface
         }
         $route = $this->config->route($storeId);
         $items = [];
-        $posts = $this->postCollectionFactory->create()->addVisibleFilter($storeId);
+        $posts = $this->postCollectionFactory->create()->addVisibleFilter($storeId, null, !$this->config->ownPostsOnly($storeId));
         $lastPost = null;
         $usedAuthors = [];
         foreach ($posts as $post) {

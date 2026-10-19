@@ -27,6 +27,15 @@ class Config
         return $this->flag('general/enabled', $storeId);
     }
 
+    /**
+     * Whether the store view lists only the posts assigned to it, leaving out
+     * the ones set to All Store Views (a store with a blog of its own).
+     */
+    public function ownPostsOnly(?int $storeId = null): bool
+    {
+        return $this->flag('general/own_posts_only', $storeId);
+    }
+
     /** The blog's path: example.com/<route>/... */
     public function route(?int $storeId = null): string
     {

@@ -19,6 +19,7 @@
         <zero_blog>
             <general>
                 <enabled>1</enabled>
+                <own_posts_only>0</own_posts_only>
                 <route>blog</route>
                 <title>Blog</title>
                 <posts_per_page>12</posts_per_page>
