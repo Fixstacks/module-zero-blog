@@ -1,4 +1,4 @@
-# fixstacks/module-zero-blog — licensing
+# zerofront/module-zero-blog — licensing
 
 Copyright © 2026 Roman Pasichnyk.
 
